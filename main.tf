@@ -112,8 +112,8 @@ resource "aws_cognito_identity_provider" "okta" {
   provider_type = "OIDC"
 
   provider_details = {
-    client_id                  = "<YOUR_OKTA_CLIENT_ID>"
-    client_secret              = "<YOUR_OKTA_CLIENT_SECRET>"
+    client_id                  = "3ECMEpuEMGFl4ikPkSanEbo2zYT2G3hm"
+    client_secret              = "ZakrXm0SMESE3shtS2koXVWgHm77IccGEQz08f6vbeCKdW90blcp2mmt4vq7C5EN"
     authorize_scopes           = "openid email profile"
     oidc_issuer                = "https://dev-gfew5m8jtuzrrhhw.okta.com/oauth2/default"
     attributes_request_method  = "GET"
