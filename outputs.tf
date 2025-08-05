@@ -18,6 +18,3 @@ output "cognito_domain" {
   value = aws_cognito_user_pool_domain.user_pool_domain.domain
 }
 
-output "github_oidc_role_arn" {
-  value = aws_iam_role.github_oidc_role.arn
-}
