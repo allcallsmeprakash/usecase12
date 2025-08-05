@@ -2,6 +2,16 @@ provider "aws" {
   region = "us-east-1"
 }
 
+
+terraform {
+  required_providers {
+    auth0 = {
+      source  = "alexkappa/auth0"
+      version = "~> 0.45.0" # or the latest stable version
+    }
+  }
+}
+
 provider "auth0" {
   domain        = "dev-gfew5m8jtuzrrhhw.us.auth0.com"
   client_id                  = "3ECMEpuEMGFl4ikPkSanEbo2zYT2G3hm"
