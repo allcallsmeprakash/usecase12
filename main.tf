@@ -6,11 +6,12 @@ provider "aws" {
 terraform {
   required_providers {
     auth0 = {
-      source  = "alexkappa/auth0"
-      version = "~> 0.45.0" # or the latest stable version
+      source  = "auth0/auth0"
+      version = "~> 1.0"
     }
   }
 }
+
 
 provider "auth0" {
   domain        = "dev-gfew5m8jtuzrrhhw.us.auth0.com"
