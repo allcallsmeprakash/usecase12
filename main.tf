@@ -2,6 +2,12 @@ provider "aws" {
   region = "us-east-1"
 }
 
+provider "auth0" {
+  domain        = "dev-gfew5m8jtuzrrhhw.us.auth0.com"
+  client_id     = var.auth0_client_id
+  client_secret = var.auth0_client_secret
+}
+
 # S3 Bucket for Hosting
 resource "aws_s3_bucket" "website_bucket" {
   bucket = "hello-world-web-app-prod"
@@ -102,20 +108,29 @@ resource "aws_cloudfront_distribution" "website_distribution" {
   }
 }
 
+# Auth0 Application Configuration
+resource "auth0_client" "hello_world_app" {
+  name            = "HelloWorldApp"
+  app_type        = "regular_web"
+  callbacks       = ["https://${aws_cloudfront_distribution.website_distribution.domain_name}/index.html"]
+  logout_urls     = ["https://${aws_cloudfront_distribution.website_distribution.domain_name}/logout"]
+  oidc_conformant = true
+}
+
 # Cognito User Pool
 resource "aws_cognito_user_pool" "user_pool" {
   name = "hello-world-user-pool"
 }
 
-# Auth0 Identity Provider
+# Auth0 Identity Provider for Cognito
 resource "aws_cognito_identity_provider" "auth0" {
   user_pool_id  = aws_cognito_user_pool.user_pool.id
   provider_name = "Auth0"
   provider_type = "OIDC"
 
   provider_details = {
-    client_id                  = "7Xg7bdUE1exhk98mcpcAsvMw0D1g5pfK"
-    client_secret              = "LIX3ZYCjKgFVq8i8qiNr3PLmnRAcdLR48LFuVn-Nxmw_Ix1k8OLRv5KdjVen62PC"
+    client_id                  = auth0_client.hello_world_app.client_id
+    client_secret              = var.auth0_client_secret
     authorize_scopes           = "openid email profile"
     oidc_issuer                = "https://dev-gfew5m8jtuzrrhhw.us.auth0.com"
     attributes_request_method  = "GET"
