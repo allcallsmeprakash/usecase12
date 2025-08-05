@@ -1,9 +1,5 @@
-name: Deploy Hello World Web App - Production
+name: Destroy Hello World Web App - Production
 
-# on:
-#   push:
-#     branches:
-#       - main
 on:
   workflow_dispatch:
 
@@ -12,7 +8,7 @@ permissions:
   contents: read
 
 jobs:
-  deploy:
+  destroy:
     runs-on: ubuntu-latest
     environment: production
 
@@ -26,14 +22,14 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
           aws-region: ${{ secrets.AWS_REGION }}
 
+      - name: Zip Lambda function (required for Terraform destroy)
+        run: zip -j lambda.zip lambda/index.js
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
 
       - name: Terraform Init
         run: terraform init -backend-config="key=hello-world-app/prod/terraform.tfstate"
-      - name: Terraform plan
-        run: terraform plan
-      - name: Terraform destroy
+
+      - name: Terraform Destroy
         run: terraform destroy -auto-approve
-
-
