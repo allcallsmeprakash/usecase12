@@ -31,7 +31,8 @@ jobs:
 
       - name: Terraform Init
         run: terraform init -backend-config="key=hello-world-app/prod/terraform.tfstate"
-
+      - name: Terraform plan
+        run: terraform plan
       - name: Terraform destroy
         run: terraform destroy -auto-approve
 
