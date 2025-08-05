@@ -124,7 +124,7 @@ resource "auth0_client" "hello_world_app" {
   name            = "HelloWorldApp"
   app_type        = "regular_web"
   callbacks       = ["https://${aws_cloudfront_distribution.website_distribution.domain_name}/index.html"]
-  logout_urls     = ["https://${aws_cloudfront_distribution.website_distribution.domain_name}/logout"]
+  allowed_logout_urls      = ["https://${aws_cloudfront_distribution.website_distribution.domain_name}/logout"]
   oidc_conformant = true
 }
 
