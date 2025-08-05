@@ -49,11 +49,11 @@ resource "aws_cognito_user_pool_client" "user_pool_client" {
   allowed_oauth_scopes = ["email", "openid", "profile"]
 
   callback_urls = [
-    "https://${aws_cloudfront_distribution.website_distribution.domain_name}/index.html"
+    "https://d79d7o6vylzht.cloudfront.net/index.html"
   ]
 
   logout_urls = [
-    "https://${aws_cloudfront_distribution.website_distribution.domain_name}/logout"
+    "https://d79d7o6vylzht.cloudfront.net/logout"
   ]
 
   supported_identity_providers = ["COGNITO", "Auth0"]
