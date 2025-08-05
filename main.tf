@@ -1,10 +1,11 @@
+
 provider "aws" {
   region = "us-east-1"
 }
 
 # S3 Bucket for Hosting
 resource "aws_s3_bucket" "website_bucket" {
-  bucket = "hello-world-web-app-bucket"
+  bucket = "hello-world-web-app-prod"
 
   website {
     index_document = "index.html"
@@ -12,7 +13,7 @@ resource "aws_s3_bucket" "website_bucket" {
   }
 
   tags = {
-    Name = "HelloWorldWebApp"
+    Name = "HelloWorldWebAppProd"
   }
 }
 
@@ -89,31 +90,31 @@ resource "aws_cloudfront_distribution" "website_distribution" {
   }
 
   tags = {
-    Name = "HelloWorldWebAppDistribution"
+    Name = "HelloWorldWebAppDistributionProd"
   }
 }
 
 # Cognito User Pool
 resource "aws_cognito_user_pool" "user_pool" {
-  name = "hello-world-user-pool"
+  name = "hello-world-user-pool-prod"
 }
 
 # Cognito User Pool Client
 resource "aws_cognito_user_pool_client" "user_pool_client" {
-  name         = "hello-world-client"
+  name         = "hello-world-client-prod"
   user_pool_id = aws_cognito_user_pool.user_pool.id
   generate_secret = false
   allowed_oauth_flows_user_pool_client = true
   allowed_oauth_flows = ["code"]
   allowed_oauth_scopes = ["email", "openid", "profile"]
-  callback_urls = ["https://example.com/callback"]
-  logout_urls   = ["https://example.com/logout"]
+  callback_urls = ["https://hello-world-app-prod-domain.auth.us-east-1.amazoncognito.com/callback"]
+  logout_urls   = ["https://hello-world-app-prod-domain.auth.us-east-1.amazoncognito.com/logout"]
   supported_identity_providers = ["COGNITO"]
 }
 
-# Cognito Domain
+# Cognito Hosted Domain
 resource "aws_cognito_user_pool_domain" "user_pool_domain" {
-  domain       = "hello-world-app-domain"
+  domain       = "hello-world-app-prod-domain"
   user_pool_id = aws_cognito_user_pool.user_pool.id
 }
 
@@ -121,7 +122,7 @@ resource "aws_cognito_user_pool_domain" "user_pool_domain" {
 data "aws_caller_identity" "current" {}
 
 resource "aws_iam_role" "github_oidc_role" {
-  name = "github-actions-oidc-role"
+  name = "github-actions-oidc-role-prod"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
@@ -135,7 +136,7 @@ resource "aws_iam_role" "github_oidc_role" {
         Condition = {
           StringEquals = {
             "token.actions.githubusercontent.com:aud": "sts.amazonaws.com",
-            "token.actions.githubusercontent.com:sub": "repo:allcallsmeprakash/usecase12:ref:refs/heads/main"
+            "token.actions.githubusercontent.com:sub": "repo:your-org/your-repo:ref:refs/heads/main"
           }
         }
       }
