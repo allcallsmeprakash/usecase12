@@ -15,8 +15,8 @@ terraform {
 
 provider "auth0" {
   domain        = "dev-gfew5m8jtuzrrhhw.us.auth0.com"
-  client_id                  = "3ECMEpuEMGFl4ikPkSanEbo2zYT2G3hm"
-  client_secret              = "ZakrXm0SMESE3shtS2koXVWgHm77IccGEQz08f6vbeCKdW90blcp2mmt4vq7C5EN"
+  client_id                  = "rZyBhpq7SsMgyhxXTPbjfmRunEZHDFNq"
+  client_secret              = "iFLPIid-tlvMK9igrZfZGnWiV6cHJI1TNZRrLN_o-vHDmJ7lKbtXuxoNTxABAsq5"
 }
 
 # S3 Bucket for Hosting
@@ -140,8 +140,8 @@ resource "aws_cognito_identity_provider" "auth0" {
   provider_type = "OIDC"
 
   provider_details = {
-    client_id                  = "3ECMEpuEMGFl4ikPkSanEbo2zYT2G3hm"
-    client_secret              = "ZakrXm0SMESE3shtS2koXVWgHm77IccGEQz08f6vbeCKdW90blcp2mmt4vq7C5EN"
+    client_id                  = "rZyBhpq7SsMgyhxXTPbjfmRunEZHDFNq"
+    client_secret              = "iFLPIid-tlvMK9igrZfZGnWiV6cHJI1TNZRrLN_o-vHDmJ7lKbtXuxoNTxABAsq5"
     authorize_scopes           = "openid email profile"
     oidc_issuer                = "https://dev-gfew5m8jtuzrrhhw.us.auth0.com"
     attributes_request_method  = "GET"
