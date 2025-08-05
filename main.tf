@@ -120,7 +120,10 @@ resource "aws_cognito_user_pool_client" "user_pool_client" {
   callback_urls = ["https://hello-world-app-prod-domain.auth.us-east-1.amazoncognito.com/callback"]
   logout_urls   = ["https://hello-world-app-prod-domain.auth.us-east-1.amazoncognito.com/logout"]
   supported_identity_providers = ["COGNITO"]
+
+  depends_on = [aws_cognito_user_pool.user_pool]
 }
+
 
 # Cognito Hosted Domain
 resource "aws_cognito_user_pool_domain" "user_pool_domain" {
