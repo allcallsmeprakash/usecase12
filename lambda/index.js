@@ -8,7 +8,7 @@ exports.handler = async (event) => {
     grant_type: 'authorization_code',
     client_id: '3eja0v1phajaecl3gf2oo2d07m',
     code: code,
-    redirect_uri: 'https://d1y2b2h22gr5ly.cloudfront.net/callback'
+    redirect_uri: 'https://d1y2b2h22gr5ly.cloudfront.net/index.html'
   });
 
   const options = {
