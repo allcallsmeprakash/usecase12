@@ -112,8 +112,8 @@ resource "aws_cognito_user_pool_client" "user_pool_client" {
   allowed_oauth_flows_user_pool_client = true
   allowed_oauth_flows = ["code", "implicit"]
   allowed_oauth_scopes = ["email", "openid", "profile"]
-  callback_urls = ["https://hello-world-app-prod-domain.auth.us-east-1.amazoncognito.com/callback"]
-  logout_urls   = ["https://hello-world-app-prod-domain.auth.us-east-1.amazoncognito.com/logout"]
+  callback_urls = ["https://${aws_cloudfront_distribution.website_distribution.domain_name}/callback"]
+  logout_urls   = ["https://${aws_cloudfront_distribution.website_distribution.domain_name}/logout"]
   supported_identity_providers = ["COGNITO"]
 
   depends_on = [aws_cognito_user_pool.user_pool]
