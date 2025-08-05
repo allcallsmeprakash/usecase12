@@ -114,8 +114,8 @@ resource "aws_cognito_identity_provider" "auth0" {
   provider_type = "OIDC"
 
   provider_details = {
-    client_id                  = "3ECMEpuEMGFl4ikPkSanEbo2zYT2G3hm"
-    client_secret              = "ZakrXm0SMESE3shtS2koXVWgHm77IccGEQz08f6vbeCKdW90blcp2mmt4vq7C5EN"
+    client_id                  = "7Xg7bdUE1exhk98mcpcAsvMw0D1g5pfK"
+    client_secret              = "LIX3ZYCjKgFVq8i8qiNr3PLmnRAcdLR48LFuVn-Nxmw_Ix1k8OLRv5KdjVen62PC"
     authorize_scopes           = "openid email profile"
     oidc_issuer                = "https://dev-gfew5m8jtuzrrhhw.us.auth0.com"
     attributes_request_method  = "GET"
