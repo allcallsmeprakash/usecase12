@@ -123,10 +123,18 @@ resource "aws_cloudfront_distribution" "website_distribution" {
 resource "auth0_client" "hello_world_app" {
   name            = "HelloWorldApp"
   app_type        = "regular_web"
-  callbacks       = ["https://${aws_cloudfront_distribution.website_distribution.domain_name}/index.html"]
-  allowed_logout_urls      = ["https://${aws_cloudfront_distribution.website_distribution.domain_name}/logout"]
   oidc_conformant = true
+
+  callbacks            = ["https://${aws_cloudfront_distribution.website_distribution.domain_name}/index.html"]
+  allowed_logout_urls  = ["https://${aws_cloudfront_distribution.website_distribution.domain_name}/logout"]
+
+  grant_types = [
+    "authorization_code",
+    "implicit",
+    "refresh_token"
+  ]
 }
+
 
 # Cognito User Pool
 resource "aws_cognito_user_pool" "user_pool" {
