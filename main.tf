@@ -13,13 +13,6 @@ terraform {
 }
 
 
-provider "auth0" {
-  domain        = "dev-gfew5m8jtuzrrhhw.us.auth0.com"
-  client_id                  = "rZyBhpq7SsMgyhxXTPbjfmRunEZHDFNq"
-  client_secret              = "iFLPIid-tlvMK9igrZfZGnWiV6cHJI1TNZRrLN_o-vHDmJ7lKbtXuxoNTxABAsq5"
-}
-
-
 
 # Cognito User Pool
 resource "aws_cognito_user_pool" "user_pool" {
@@ -33,8 +26,8 @@ resource "aws_cognito_identity_provider" "auth0" {
   provider_type = "OIDC"
 
   provider_details = {
-    client_id                  = "rZyBhpq7SsMgyhxXTPbjfmRunEZHDFNq"
-    client_secret              = "iFLPIid-tlvMK9igrZfZGnWiV6cHJI1TNZRrLN_o-vHDmJ7lKbtXuxoNTxABAsq5"
+    client_id                  = "08y8pAGPmyEWmxum90qwfAjiOzsv7ezt"
+    client_secret              = "pZvI-WV7VUGTOyBXThf7FH3FTWPUsBRvkqEdumdLPr3elFeioMhACveGYO23OgRV"
     authorize_scopes           = "openid email profile"
     oidc_issuer                = "https://dev-gfew5m8jtuzrrhhw.us.auth0.com"
     attributes_request_method  = "GET"
