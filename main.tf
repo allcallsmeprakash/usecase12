@@ -105,6 +105,26 @@ resource "aws_cognito_user_pool" "user_pool" {
   name = "hello-world-user-pool"
 }
 
+# Okta Identity Provider
+resource "aws_cognito_identity_provider" "okta" {
+  user_pool_id  = aws_cognito_user_pool.user_pool.id
+  provider_name = "Okta"
+  provider_type = "OIDC"
+
+  provider_details = {
+    client_id                  = "<YOUR_OKTA_CLIENT_ID>"
+    client_secret              = "<YOUR_OKTA_CLIENT_SECRET>"
+    authorize_scopes           = "openid email profile"
+    oidc_issuer                = "https://dev-gfew5m8jtuzrrhhw.okta.com/oauth2/default"
+    attributes_request_method  = "GET"
+  }
+
+  attribute_mapping = {
+    email = "email"
+    name  = "name"
+  }
+}
+
 resource "aws_cognito_user_pool_client" "user_pool_client" {
   name         = "hello-world-client"
   user_pool_id = aws_cognito_user_pool.user_pool.id
@@ -114,7 +134,7 @@ resource "aws_cognito_user_pool_client" "user_pool_client" {
   allowed_oauth_scopes = ["email", "openid", "profile"]
   callback_urls = ["https://${aws_cloudfront_distribution.website_distribution.domain_name}/index.html"]
   logout_urls   = ["https://${aws_cloudfront_distribution.website_distribution.domain_name}/logout"]
-  supported_identity_providers = ["COGNITO"]
+  supported_identity_providers = ["COGNITO", "Okta"]
 
   depends_on = [aws_cognito_user_pool.user_pool]
 }
@@ -124,6 +144,7 @@ resource "aws_cognito_user_pool_domain" "user_pool_domain" {
   user_pool_id = aws_cognito_user_pool.user_pool.id
 }
 
+# IAM Role for Lambda
 resource "aws_iam_role" "lambda_exec_role" {
   name = "hello-world-lambda-role"
 
@@ -211,7 +232,11 @@ resource "aws_api_gateway_stage" "api_stage" {
   }
 }
 
-# Optional Output
+# Outputs
 output "api_invoke_url" {
   value = "https://${aws_api_gateway_rest_api.hello_api.id}.execute-api.us-east-1.amazonaws.com/prod/hello"
+}
+
+output "cognito_login_url" {
+  value = "https://hello-world-app-prod-domain.auth.us-east-1.amazoncognito.com/login?response_type=token&client_id=${aws_cognito_user_pool_client.user_pool_client.id}&redirect_uri=https://${aws_cloudfront_distribution.website_distribution.domain_name}/index.html"
 }
