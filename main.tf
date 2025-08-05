@@ -7,16 +7,25 @@ provider "aws" {
 resource "aws_s3_bucket" "website_bucket" {
   bucket = "hello-world-web-app-prod"
 
-  website {
-    index_document = "index.html"
-    error_document = "error.html"
-  }
-
   tags = {
     Name = "HelloWorldWebAppProd"
   }
 }
 
+# S3 Website Configuration
+resource "aws_s3_bucket_website_configuration" "website_config" {
+  bucket = aws_s3_bucket.website_bucket.id
+
+  index_document {
+    suffix = "index.html"
+  }
+
+  error_document {
+    key = "error.html"
+  }
+}
+
+# S3 Public Access Block Configuration
 resource "aws_s3_bucket_public_access_block" "website_bucket_block" {
   bucket = aws_s3_bucket.website_bucket.id
 
@@ -26,6 +35,7 @@ resource "aws_s3_bucket_public_access_block" "website_bucket_block" {
   restrict_public_buckets = false
 }
 
+# S3 Bucket Policy for Public Read Access
 resource "aws_s3_bucket_policy" "website_policy" {
   bucket = aws_s3_bucket.website_bucket.id
 
@@ -46,7 +56,7 @@ resource "aws_s3_bucket_policy" "website_policy" {
 # CloudFront Distribution
 resource "aws_cloudfront_distribution" "website_distribution" {
   origin {
-    domain_name = aws_s3_bucket.website_bucket.website_endpoint
+    domain_name = aws_s3_bucket_website_configuration.website_config.website_endpoint
     origin_id   = "S3Origin"
 
     custom_origin_config {
@@ -90,18 +100,18 @@ resource "aws_cloudfront_distribution" "website_distribution" {
   }
 
   tags = {
-    Name = "HelloWorldWebAppDistributionProd"
+    Name = "HelloWorldWebAppDistribution"
   }
 }
 
 # Cognito User Pool
 resource "aws_cognito_user_pool" "user_pool" {
-  name = "hello-world-user-pool-prod"
+  name = "hello-world-user-pool"
 }
 
 # Cognito User Pool Client
 resource "aws_cognito_user_pool_client" "user_pool_client" {
-  name         = "hello-world-client-prod"
+  name         = "hello-world-client"
   user_pool_id = aws_cognito_user_pool.user_pool.id
   generate_secret = false
   allowed_oauth_flows_user_pool_client = true
