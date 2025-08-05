@@ -1,4 +1,3 @@
-
 provider "aws" {
   region = "us-east-1"
 }
@@ -12,7 +11,6 @@ resource "aws_s3_bucket" "website_bucket" {
   }
 }
 
-# S3 Website Configuration
 resource "aws_s3_bucket_website_configuration" "website_config" {
   bucket = aws_s3_bucket.website_bucket.id
 
@@ -25,7 +23,6 @@ resource "aws_s3_bucket_website_configuration" "website_config" {
   }
 }
 
-# S3 Public Access Block Configuration
 resource "aws_s3_bucket_public_access_block" "website_bucket_block" {
   bucket = aws_s3_bucket.website_bucket.id
 
@@ -35,7 +32,6 @@ resource "aws_s3_bucket_public_access_block" "website_bucket_block" {
   restrict_public_buckets = false
 }
 
-# S3 Bucket Policy for Public Read Access
 resource "aws_s3_bucket_policy" "website_policy" {
   bucket = aws_s3_bucket.website_bucket.id
 
@@ -109,7 +105,6 @@ resource "aws_cognito_user_pool" "user_pool" {
   name = "hello-world-user-pool"
 }
 
-# Cognito User Pool Client
 resource "aws_cognito_user_pool_client" "user_pool_client" {
   name         = "hello-world-client"
   user_pool_id = aws_cognito_user_pool.user_pool.id
@@ -124,13 +119,10 @@ resource "aws_cognito_user_pool_client" "user_pool_client" {
   depends_on = [aws_cognito_user_pool.user_pool]
 }
 
-
-# Cognito Hosted Domain
 resource "aws_cognito_user_pool_domain" "user_pool_domain" {
   domain       = "hello-world-app-prod-domain"
   user_pool_id = aws_cognito_user_pool.user_pool.id
 }
-
 
 resource "aws_iam_role" "lambda_exec_role" {
   name = "hello-world-lambda-role"
@@ -163,7 +155,7 @@ resource "aws_lambda_function" "hello_world" {
   source_code_hash = filebase64sha256("${path.module}/lambda.zip")
 }
 
-
+# API Gateway Setup
 resource "aws_api_gateway_rest_api" "hello_api" {
   name        = "hello-world-api"
   description = "API for Hello World Lambda"
@@ -175,20 +167,20 @@ resource "aws_api_gateway_resource" "hello_resource" {
   path_part   = "hello"
 }
 
-resource "aws_api_gateway_method" "hello_method" {
-  rest_api_id   = aws_api_gateway_rest_api.hello_api.id
-  resource_id   = aws_api_gateway_resource.hello_resource.id
-  http_method   = "GET"
-  authorization = "COGNITO_USER_POOLS"
-  authorizer_id = aws_api_gateway_authorizer.cognito_auth.id
-}
-
 resource "aws_api_gateway_authorizer" "cognito_auth" {
   name                    = "CognitoAuthorizer"
   rest_api_id             = aws_api_gateway_rest_api.hello_api.id
   identity_source         = "method.request.header.Authorization"
   type                    = "COGNITO_USER_POOLS"
   provider_arns           = [aws_cognito_user_pool.user_pool.arn]
+}
+
+resource "aws_api_gateway_method" "hello_method" {
+  rest_api_id   = aws_api_gateway_rest_api.hello_api.id
+  resource_id   = aws_api_gateway_resource.hello_resource.id
+  http_method   = "GET"
+  authorization = "COGNITO_USER_POOLS"
+  authorizer_id = aws_api_gateway_authorizer.cognito_auth.id
 }
 
 resource "aws_api_gateway_integration" "lambda_integration" {
@@ -201,6 +193,25 @@ resource "aws_api_gateway_integration" "lambda_integration" {
 }
 
 resource "aws_api_gateway_deployment" "hello_deployment" {
-  depends_on = [aws_api_gateway_integration.lambda_integration]
+  depends_on  = [aws_api_gateway_integration.lambda_integration]
   rest_api_id = aws_api_gateway_rest_api.hello_api.id
+}
+
+resource "aws_api_gateway_stage" "api_stage" {
+  stage_name    = "prod"
+  rest_api_id   = aws_api_gateway_rest_api.hello_api.id
+  deployment_id = aws_api_gateway_deployment.hello_deployment.id
+
+  variables = {
+    lambdaAlias = "prod"
+  }
+
+  tags = {
+    Environment = "prod"
+  }
+}
+
+# Optional Output
+output "api_invoke_url" {
+  value = "https://${aws_api_gateway_rest_api.hello_api.id}.execute-api.us-east-1.amazonaws.com/prod/hello"
 }
