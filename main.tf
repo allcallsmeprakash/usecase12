@@ -4,8 +4,8 @@ provider "aws" {
 
 provider "auth0" {
   domain        = "dev-gfew5m8jtuzrrhhw.us.auth0.com"
-  client_id     = var.auth0_client_id
-  client_secret = var.auth0_client_secret
+  client_id                  = "3ECMEpuEMGFl4ikPkSanEbo2zYT2G3hm"
+  client_secret              = "ZakrXm0SMESE3shtS2koXVWgHm77IccGEQz08f6vbeCKdW90blcp2mmt4vq7C5EN"
 }
 
 # S3 Bucket for Hosting
@@ -129,8 +129,8 @@ resource "aws_cognito_identity_provider" "auth0" {
   provider_type = "OIDC"
 
   provider_details = {
-    client_id                  = auth0_client.hello_world_app.client_id
-    client_secret              = var.auth0_client_secret
+    client_id                  = "3ECMEpuEMGFl4ikPkSanEbo2zYT2G3hm"
+    client_secret              = "ZakrXm0SMESE3shtS2koXVWgHm77IccGEQz08f6vbeCKdW90blcp2mmt4vq7C5EN"
     authorize_scopes           = "openid email profile"
     oidc_issuer                = "https://dev-gfew5m8jtuzrrhhw.us.auth0.com"
     attributes_request_method  = "GET"
