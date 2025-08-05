@@ -148,23 +148,7 @@ resource "aws_cognito_identity_provider" "auth0" {
   }
 }
 
-# Cognito User Pool Client
-resource "aws_cognito_user_pool_client" "user_pool_client" {
-  name         = "hello-world-client"
-  user_pool_id = aws_cognito_user_pool.user_pool.id
-  generate_secret = false
-  allowed_oauth_flows_user_pool_client = true
-  allowed_oauth_flows = ["code", "implicit"]
-  allowed_oauth_scopes = ["email", "openid", "profile"]
-  callback_urls = ["https://${aws_cloudfront_distribution.website_distribution.domain_name}/index.html"]
-  logout_urls   = ["https://${aws_cloudfront_distribution.website_distribution.domain_name}/logout"]
-  supported_identity_providers = ["COGNITO", "Auth0"]
 
-  depends_on = [
-    aws_cognito_user_pool.user_pool,
-    aws_cognito_identity_provider.auth0
-  ]
-}
 
 resource "aws_cognito_user_pool_domain" "user_pool_domain" {
   domain       = "hello-world-app-prod-domain"
