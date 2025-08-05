@@ -32,8 +32,11 @@ resource "aws_s3_bucket_public_access_block" "website_bucket_block" {
   restrict_public_buckets = false
 }
 
+
 resource "aws_s3_bucket_policy" "website_policy" {
   bucket = aws_s3_bucket.website_bucket.id
+
+  depends_on = [aws_s3_bucket_public_access_block.website_bucket_block]
 
   policy = jsonencode({
     Version = "2012-10-17",
@@ -48,6 +51,7 @@ resource "aws_s3_bucket_policy" "website_policy" {
     ]
   })
 }
+
 
 # CloudFront Distribution
 resource "aws_cloudfront_distribution" "website_distribution" {
