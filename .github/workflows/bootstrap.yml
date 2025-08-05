@@ -26,7 +26,7 @@ jobs:
         uses: hashicorp/setup-terraform@v2
 
       - name: Terraform Init
-        run: terraform init -backend-config="key=hello-world-app/prod/terraform.tfstate"
+        run: terraform init -backend-config="key=hello-world-app/terraform.tfstate"
 
       - name: Terraform Apply
         run: terraform apply -auto-approve
