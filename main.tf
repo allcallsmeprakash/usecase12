@@ -163,5 +163,5 @@ output "api_invoke_url" {
 }
 
 output "cognito_login_url" {
-  value = "https://hello-world-app-prod-domain.auth.us-east-1.amazoncognito.com/login?response_type=token&client_id=${aws_cognito_user_pool_client.user_pool_client.id}&redirect_uri=https://${aws_cloudfront_distribution.website_distribution.domain_name}/index.html"
+  value = "https://hello-world-app-prod-domain.auth.us-east-1.amazoncognito.com/login?response_type=token&client_id=${aws_cognito_user_pool_client.user_pool_client.id}&redirect_uri=https://d79d7o6vylzht.cloudfront.net/index.html"
 }
