@@ -25,6 +25,11 @@ jobs:
       - name: Zip Lambda function (required for Terraform destroy)
         run: zip -j lambda.zip lambda/index.js
 
+      
+      - name: Empty S3 bucket before destroy
+        run: aws s3 rm s3://${{ secrets.S3_BUCKET_NAME }} --recursive
+
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
 
