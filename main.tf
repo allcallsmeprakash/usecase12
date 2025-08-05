@@ -32,7 +32,6 @@ resource "aws_s3_bucket_public_access_block" "website_bucket_block" {
   restrict_public_buckets = false
 }
 
-
 resource "aws_s3_bucket_policy" "website_policy" {
   bucket = aws_s3_bucket.website_bucket.id
 
@@ -51,7 +50,6 @@ resource "aws_s3_bucket_policy" "website_policy" {
     ]
   })
 }
-
 
 # CloudFront Distribution
 resource "aws_cloudfront_distribution" "website_distribution" {
@@ -109,17 +107,17 @@ resource "aws_cognito_user_pool" "user_pool" {
   name = "hello-world-user-pool"
 }
 
-# Okta Identity Provider
-resource "aws_cognito_identity_provider" "okta" {
+# Auth0 Identity Provider
+resource "aws_cognito_identity_provider" "auth0" {
   user_pool_id  = aws_cognito_user_pool.user_pool.id
-  provider_name = "Okta"
+  provider_name = "Auth0"
   provider_type = "OIDC"
 
   provider_details = {
     client_id                  = "3ECMEpuEMGFl4ikPkSanEbo2zYT2G3hm"
     client_secret              = "ZakrXm0SMESE3shtS2koXVWgHm77IccGEQz08f6vbeCKdW90blcp2mmt4vq7C5EN"
     authorize_scopes           = "openid email profile"
-    oidc_issuer                = "https://dev-gfew5m8jtuzrrhhw.okta.com/oauth2/default"
+    oidc_issuer                = "https://dev-gfew5m8jtuzrrhhw.us.auth0.com"
     attributes_request_method  = "GET"
   }
 
@@ -129,6 +127,7 @@ resource "aws_cognito_identity_provider" "okta" {
   }
 }
 
+# Cognito User Pool Client
 resource "aws_cognito_user_pool_client" "user_pool_client" {
   name         = "hello-world-client"
   user_pool_id = aws_cognito_user_pool.user_pool.id
@@ -138,9 +137,12 @@ resource "aws_cognito_user_pool_client" "user_pool_client" {
   allowed_oauth_scopes = ["email", "openid", "profile"]
   callback_urls = ["https://${aws_cloudfront_distribution.website_distribution.domain_name}/index.html"]
   logout_urls   = ["https://${aws_cloudfront_distribution.website_distribution.domain_name}/logout"]
-  supported_identity_providers = ["COGNITO", "Okta"]
+  supported_identity_providers = ["COGNITO", "Auth0"]
 
-  depends_on = [aws_cognito_user_pool.user_pool]
+  depends_on = [
+    aws_cognito_user_pool.user_pool,
+    aws_cognito_identity_provider.auth0
+  ]
 }
 
 resource "aws_cognito_user_pool_domain" "user_pool_domain" {
